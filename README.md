@@ -1,5 +1,6 @@
 # INTERFACING TEMPERATURE SENSOR WITH IOT CONTROLLER AND UPLOADING DATA TO THE CLOUD VIA LORAWAN
-
+# NAME: D.BALA SUBRAMANYAM
+# REG.NO: 212224040062
 # AIM:
 To upload the temperature sensor value in the Things mate using Arduino controller.
 
@@ -79,10 +80,71 @@ Update rate: 1 Hz (one reading per second)</br>
 ![DHT11-Sensor](https://github.com/user-attachments/assets/69e4670d-6116-4cab-b905-941169d913a5)
 
 # PROGRAM:
+~~~
+#include "ThingSpeak.h"
+#include <WiFi.h>
+#include "DHT.h"
+
+
+char ssid[] = "Subbu";//your wifi ssid//
+char pass[] = "subbu1234";//your wifi pass//*/
+
+const  int out = 2;
+float Temperature = 0;
+float Humidity =0;
+WiFiClient client;
+DHT dht(out,DHT11);
+long myChannelField =3087414;
+const int TemperatureField = 1;
+const int HumidityField =2;
+const char* myWriteAPIKey = "XWWYE7PXRCC2MWTG";
+
+void setup() {
+  Serial.begin(115200);
+  ThingSpeak.begin(client);
+  dht.begin();
+  pinMode(out,INPUT);
+}
+
+void loop() {
+  if(WiFi.status() != WL_CONNECTED){
+    Serial.print("Attempting to connect to  SSID: ");
+    Serial.print(ssid);
+    while(WiFi.status() != WL_CONNECTED){
+      WiFi.begin(ssid,pass);
+      Serial.print(".");
+      delay(5000);
+    }
+    Serial.println("\nConnected");
+  }
+  Temperature = dht.readTemperature();
+  Humidity = dht.readHumidity();
+
+
+
+Serial.print("Temperature: ");
+Serial.print(Temperature);
+Serial.println(" C\n");
+
+
+Serial.print("Humidity: ");
+Serial.print(Humidity);
+Serial.println(" g.m-3\n");
+
+ThingSpeak.setField(TemperatureField, Temperature);
+ThingSpeak.setField(HumidityField, Humidity);
+ThingSpeak.writeFields(myChannelField, myWriteAPIKey);
+delay(2500);
+}
+~~~
 
 # CIRCUIT DIAGRAM:
+![WhatsApp Image 2025-10-14 at 11 53 32_b57b316c](https://github.com/user-attachments/assets/08cb9e21-2dd9-40c9-b3f4-e5b51eaa6102)
 
 # OUTPUT:
+![WhatsApp Image 2025-10-14 at 11 48 19_e65431f2](https://github.com/user-attachments/assets/cffb0904-f3de-435e-ba0c-2c3934691109)
+<img width="1919" height="1199" alt="Screenshot 2025-10-14 114836" src="https://github.com/user-attachments/assets/66269eff-fe6c-46cc-a97a-2c60453d877f" />
+
 
 # RESULT:
 
